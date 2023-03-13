@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript"/>
+
+  <title>
+    Package: Generic_Line_Parser (generic)
+  </title>
+  <link rel='stylesheet' href='support/docgen.css' type='text/css'/>
+  <link rel='stylesheet' href='support/tags.css' type='text/css'/>
+  <script src='support/docgen.js' type='text/javascript' charset='utf-8'></script>
+</head>
+<body onload="onloadDoc();">
+
+<div id='leftSide'>
+  <div id='leftSideInside'>
+  <div id='header'>
+    <h2 class="button">Documentation</h2>
+    <a href='index.html'><div class="button2">Table of Contents</div></a>
+
+    <a href='tree.html'><div class="button2">Class Inheritance Tree</div></a>
+
+  </div>
+
+  <div id='navigation'>
+    <h2 class="button">Navigation</h2>
+    <a href='#Description'><div class="button2">Description</div></a>
+    <a href='#Types'><div class="button2">Types</div></a>
+    <a href='#Constants'><div class="button2">Constants &amp; Global variables</div></a>
+    <a href='#Methods'><div class="button2">Subprograms &amp; Entries</div></a>
+  </div><!-- navigation -->
+  </div>
+</div> <!-- leftSide -->
+
+<div class='default' id='rightSide'>
+ <div id='rightSideInside'>
+ <div id='Index'>
+  <h2>Index</h2>
+  <script type="text/javascript">
+    var names = new Array (
+new Array ('Parameter_<wbr/>Callback', 'generic_line_parser.ads:60:9', 'type-spec'),
+new Array ('Parameter_<wbr/>Descriptor', 'generic_line_parser.ads:65:9', 'type-spec'),
+new Array ('Parameter_<wbr/>Descriptor_<wbr/>Array', 'generic_line_parser.ads:85:9', 'type-spec'),
+new Array ('Bad_<wbr/>Command', 'generic_line_parser.ads:98:4', 'var-spec'),
+new Array ('Parse_<wbr/>Command_<wbr/>Line', 'generic_line_parser.ads:92:14', 'subp-spec'),
+new Array ('To_<wbr/>Float', 'generic_line_parser.ads:103:13', 'subp-spec'),
+new Array ('To_<wbr/>Natural', 'generic_line_parser.ads:108:13', 'subp-spec'),
+      new Array ('dummy', '', ''));
+    printIndexList (names);
+  </script>
+  <noscript>
+    <ul>
+      <li class='type-spec'><a href="#generic_line_parser.ads:60:9">Parameter_<wbr/>Callback</a></li>
+      <li class='type-spec'><a href="#generic_line_parser.ads:65:9">Parameter_<wbr/>Descriptor</a></li>
+      <li class='type-spec'><a href="#generic_line_parser.ads:85:9">Parameter_<wbr/>Descriptor_<wbr/>Array</a></li>
+      <li class='var-spec'><a href="#generic_line_parser.ads:98:4">Bad_<wbr/>Command</a></li>
+      <li class='subp-spec'><a href="#generic_line_parser.ads:92:14">Parse_<wbr/>Command_<wbr/>Line</a></li>
+      <li class='subp-spec'><a href="#generic_line_parser.ads:103:13">To_<wbr/>Float</a></li>
+      <li class='subp-spec'><a href="#generic_line_parser.ads:108:13">To_<wbr/>Natural</a></li>
+    </ul>
+  </noscript>
+ </div>
+ </div>
+</div>
+
+<div class='default' id='documentation'>
+  <div class='title'>
+    Package: <i>Generic_Line_Parser (generic)</i>
+      (<a href="src_generic_line_parser.ads.html">Source File</a>)
+  </div>
+  <div class='subprograms'>
+    <h1><a name='Description' id='Description'></a>Description</h1>
+    <div class="class">
+    <div class='details'><pre><span class="keyword">generic</span>
+   <span class="keyword">type</span> <span class="name"><a name="generic_line_parser.ads:49:9"></a>Config_Data</span> <span class="keyword">is</span> <span class="keyword">limited</span> <span class="keyword">private</span>;
+   <span class="comment">-- The parameters read from the command line will be written in
+</span>   <span class="comment">-- a variable of this type
+</span>
+   <span class="comment">-- Set this to False if you want case insensitive option matching.
+</span>   <span class="comment">-- For example, if you set this to False, "input", "Input", "INPUT"
+</span>   <span class="comment">-- and "InPuT" will be equivalent names for the option "input"
+</span>   <span class="name"><a name="generic_line_parser.ads:56:4"></a>Case_Sensitive</span> : Boolean := True;
+<span class="keyword">package</span> <span class="name"><b>Generic_Line_Parser</b></span> <span class="keyword">is</span></pre></div>
+    <div class='comment'><div class="summary" ><p>This is a generic package implementing a simple-to-use command line parser.  Yes, I know, everyone makes his/her own command line parser... so, I wrote mine.  As they say, every open source project starts with a programmer that schratches hes own itch. So I did... If you find this useful, you are welcome to use it. </p><p>The ideas behind this package are the following </p><p>* Parameters are nominal, non positional.  The syntax is of "named parameter" type, that is, each command line parameter is expected to have thefollowing format </p><p>label ['=' value] </p><p>where "label" is any string without '='. </p><p>* Parsed value are written in a "configuration variable" whose type is a formal parameter of this package.  The values are written in the configuration variable by using some callbacks provided by caller. </p><p>The names of the parameters are given to the parser in "parameter description array" that is an array of records that specify </p><p>+ The parameter name </p><p>+ A default value (if needed) </p><p>+ If the parameter is mandatory </p><p>+ If it can be specified more than once </p><p>+ The callback function to be called when the parameter is found </p><p>In order to parse the command line it suffices to call Parse_Command_Line giving as argument the array of parameter descriptors and the configuration variable to be written.  For every parameter found, the corresponding callback function is called.  If at the end of the parsing there are some optional parameters that were missing from the command line, the corresponding callbacks are called with the default parameter.</p></div></div>
+    </div>
+  </div>
+
+
+
+
+    <div class='subprograms'>
+      <h1><a name='Types' id='Types'></a>Types</h1>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:60:9' id='generic_line_parser.ads:60:9'></a>Parameter_Callback
+          - <a href="src_generic_line_parser.ads.html#60" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">type</span> <span class="name"><b>Parameter_Callback</b></span> <span class="keyword">is</span>
+     <span class="keyword">access</span> <span class="keyword">procedure</span> (Name   : <span class="keyword">in</span>     Unbounded_String;
+                       Value  : <span class="keyword">in</span>     Unbounded_String;
+                       Result : <span class="keyword">in</span> <span class="keyword">out</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:49:9" title="defined at generic_line_parser.ads:49:9">Config_Data</a>);</pre></div>
+      </div>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:65:9' id='generic_line_parser.ads:65:9'></a>Parameter_Descriptor
+          - <a href="src_generic_line_parser.ads.html#65" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">type</span> <span class="name"><b>Parameter_Descriptor</b></span> <span class="keyword">is</span>
+      <span class="keyword">record</span>
+         Name      : Unbounded_String;    <span class="comment">-- Parameter name
+</span>         Default   : Unbounded_String;    <span class="comment">-- Default value used if not on C.L.
+</span>         Mandatory : Boolean;             <span class="comment">-- Parameter MUST be given
+</span>         Only_Once : Boolean;             <span class="comment">-- Parameter MUST NOT be given more than once
+</span>         Callback  : <a href="generic_line_parser.ads.html#generic_line_parser.ads:60:9" title="defined at generic_line_parser.ads:60:9">Parameter_Callback</a>;  <span class="comment">-- Called when parameter found
+</span>      <span class="keyword">end</span> <span class="keyword">record</span>;</pre></div>
+        <div class='comment'><div class="description" >Record holding the description of a parameter.  The fields should be self-explenatory (I hope).  The only field that needs some explanation is Name since it allows to specify more than one name for each parameter.  The syntax is very simple: just separate the names with commas.  For example, if Name is "f,filename,input" one can use on the command line, with the same effect  f=/tmp/a.txt or filename=/tmp/a.txt or input=/tmp/a.txt.  Spaces at both ends of the label name are trimmed, so that, for example, "f,filename,input" is equivalent to "f ,    filename  ,input "</div></div>
+      </div>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:85:9' id='generic_line_parser.ads:85:9'></a>Parameter_Descriptor_Array
+          - <a href="src_generic_line_parser.ads.html#85" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">type</span> <span class="name"><b>Parameter_Descriptor_Array</b></span> <span class="keyword">is</span>
+     <span class="keyword">array</span> (Natural <span class="keyword">range</span> <>) <span class="keyword">of</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:65:9" title="defined at generic_line_parser.ads:65:9">Parameter_Descriptor</a>;</pre></div>
+      </div>
+    </div>
+
+    <div class='subprograms'>
+      <h1><a name='Constants' id='Constants'></a>Constants &amp; Global variables</h1>
+      <div class="class">
+        <h3><a name='generic_line_parser.ads:98:4' id='generic_line_parser.ads:98:4'></a>Bad_Command
+          - <a href="src_generic_line_parser.ads.html#98" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="name"><b>Bad_Command</b></span> : <span class="keyword">exception</span>;</pre></div>
+      </div>
+    </div>
+
+    <div class='subprograms'>
+      <h1><a name='Methods' id='Methods'></a>Subprograms &amp; Entries</h1>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:92:14' id='generic_line_parser.ads:92:14'></a>Parse_Command_Line
+          - <a href="src_generic_line_parser.ads.html#92" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">procedure</span> <span class="name"><b>Parse_Command_Line</b></span>     <table><tr><td>(</td><td><span class="name"><a name="generic_line_parser.ads:93:7"></a>Parameters</span></td><td>: <span class="keyword">in</span>     <a href="generic_line_parser.ads.html#generic_line_parser.ads:85:9" title="defined at generic_line_parser.ads:85:9">Parameter_Descriptor_Array</a>;</td></tr><tr><td></td><td><span class="name"><a name="generic_line_parser.ads:94:7"></a>Result</span></td><td>:    <span class="keyword">out</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:49:9" title="defined at generic_line_parser.ads:49:9">Config_Data</a>;</td></tr><tr><td></td><td><span class="name"><a name="generic_line_parser.ads:95:7"></a>Help_Line</span></td><td>: <span class="keyword">in</span>     String := <span class="string">""</span>;</td></tr><tr><td></td><td><span class="name"><a name="generic_line_parser.ads:96:7"></a>Help_Output</span></td><td>: <span class="keyword">in</span>     Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Error);</td></tr></table></pre></div>
+        <div class='comment'>Main exported method.  It parses the command line and it writes
+the result in Result.  If some error is encountered, Bad_Command
+is raised with an explicative exception message.  Help_Line,
+if not empty, is written to Help_Output in case of error.
+</div>
+      </div>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:103:13' id='generic_line_parser.ads:103:13'></a>To_Float
+          - <a href="src_generic_line_parser.ads.html#103" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">function</span> <span class="name"><b>To_Float</b></span> <table><tr><td>(</td><td><span class="name"><a name="generic_line_parser.ads:103:23"></a>X</span></td><td>: Unbounded_String)</td></tr></table><span class="keyword">return</span> Float;</pre></div>
+        <div class='comment'>Convenient conversion function to Float that raise Bad_Command if
+the argument has not a valid syntax
+</div>
+      </div>
+      <div class="class">
+        <h3>
+          <a name='generic_line_parser.ads:108:13' id='generic_line_parser.ads:108:13'></a>To_Natural
+          - <a href="src_generic_line_parser.ads.html#108" title="Goto spec">Spec</a>
+        </h3>
+        <div class='details'><pre><span class="keyword">function</span> <span class="name"><b>To_Natural</b></span> <table><tr><td>(</td><td><span class="name"><a name="generic_line_parser.ads:108:25"></a>X</span></td><td>: Unbounded_String)</td></tr></table><span class="keyword">return</span> Natural;</pre></div>
+        <div class='comment'>Convenient conversion function to Float that raise Bad_Command if
+the argument has not a valid syntax
+</div>
+      </div>
+    </div>
+</div> <!-- documentation -->
+
+</body>
+</html>

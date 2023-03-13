@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript"/>
+
+  <title>
+    File: generic_line_parser.ads
+  </title>
+  <link rel='stylesheet' href='support/docgen.css' type='text/css'/>
+  <script src='support/docgen.js' type='text/javascript' charset='utf-8'></script>
+</head>
+<body onload="onloadDoc();">
+
+<div id='leftSide'>
+  <div id='leftSideInside'>
+  <div id='header'>
+    <h2 class="button">Documentation</h2>
+    <a href='index.html'><div class="button2">Table of Contents</div></a>
+
+    <a href='tree.html'><div class="button2">Class Inheritance Tree</div></a>
+
+  </div>
+  </div>
+</div> <!-- leftSide -->
+
+<div class='subprograms'>
+  <div class='details'><ol><li><pre><a name="1"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="2"></a> </pre></li>
+<li><pre><a name="3"></a><span class="comment">-- &lt;summary&gt;</span> </pre></li>
+<li><pre><a name="4"></a><span class="comment">--  This is a generic package implementing a simple-to-use command line</span> </pre></li>
+<li><pre><a name="5"></a><span class="comment">--  parser.  Yes, I know, everyone makes his/her own command line parser...</span> </pre></li>
+<li><pre><a name="6"></a><span class="comment">--  so, I wrote mine.  As they say, every open source project starts</span> </pre></li>
+<li><pre><a name="7"></a><span class="comment">--  with a programmer that schratches hes own itch. So I did... If</span> </pre></li>
+<li><pre><a name="8"></a><span class="comment">--  you find this useful, you are welcome to use it.</span> </pre></li>
+<li><pre><a name="9"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="10"></a><span class="comment">-- The ideas behind this package are the following</span> </pre></li>
+<li><pre><a name="11"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="12"></a><span class="comment">-- * Parameters are nominal, non positional.  The syntax is of</span> </pre></li>
+<li><pre><a name="13"></a><span class="comment">--   "named parameter" type, that is, each command line parameter is</span> </pre></li>
+<li><pre><a name="14"></a><span class="comment">--   expected to have thefollowing format</span> </pre></li>
+<li><pre><a name="15"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="16"></a><span class="comment">--          label ['=' value]</span> </pre></li>
+<li><pre><a name="17"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="18"></a><span class="comment">--    where "label" is any string without '='.</span> </pre></li>
+<li><pre><a name="19"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="20"></a><span class="comment">-- * Parsed value are written in a "configuration variable" whose type</span> </pre></li>
+<li><pre><a name="21"></a><span class="comment">--   is a formal parameter of this package.  The values are written</span> </pre></li>
+<li><pre><a name="22"></a><span class="comment">--   in the configuration variable by using some callbacks provided</span> </pre></li>
+<li><pre><a name="23"></a><span class="comment">--   by caller.</span> </pre></li>
+<li><pre><a name="24"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="25"></a><span class="comment">-- The names of the parameters are given to the parser in "parameter</span> </pre></li>
+<li><pre><a name="26"></a><span class="comment">-- description array" that is an array of records that specify</span> </pre></li>
+<li><pre><a name="27"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="28"></a><span class="comment">--     + The parameter name</span> </pre></li>
+<li><pre><a name="29"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="30"></a><span class="comment">--     + A default value (if needed)</span> </pre></li>
+<li><pre><a name="31"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="32"></a><span class="comment">--     + If the parameter is mandatory</span> </pre></li>
+<li><pre><a name="33"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="34"></a><span class="comment">--     + If it can be specified more than once</span> </pre></li>
+<li><pre><a name="35"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="36"></a><span class="comment">--     + The callback function to be called when the parameter is found</span> </pre></li>
+<li><pre><a name="37"></a><span class="comment">--</span> </pre></li>
+<li><pre><a name="38"></a><span class="comment">-- In order to parse the command line it suffices to call Parse_Command_Line</span> </pre></li>
+<li><pre><a name="39"></a><span class="comment">-- giving as argument the array of parameter descriptors and the configuration</span> </pre></li>
+<li><pre><a name="40"></a><span class="comment">-- variable to be written.  For every parameter found, the corresponding</span> </pre></li>
+<li><pre><a name="41"></a><span class="comment">-- callback function is called.  If at the end of the parsing there are some</span> </pre></li>
+<li><pre><a name="42"></a><span class="comment">-- optional parameters that were missing from the command line, the</span> </pre></li>
+<li><pre><a name="43"></a><span class="comment">-- corresponding callbacks are called with the default parameter.</span> </pre></li>
+<li><pre><a name="44"></a><span class="comment">-- &lt;/summary&gt;</span> </pre></li>
+<li><pre><a name="45"></a><span class="keyword">with</span> Ada.Strings.Unbounded; </pre></li>
+<li><pre><a name="46"></a><span class="keyword">with</span> Ada.Text_IO; </pre></li>
+<li><pre><a name="47"></a> </pre></li>
+<li><pre><a name="48"></a><span class="keyword">generic</span> </pre></li>
+<li><pre><a name="49"></a>   <span class="keyword">type</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:49:9" title="defined at generic_line_parser.ads:49:9">Config_Data</a> <span class="keyword">is</span> <span class="keyword">limited</span> <span class="keyword">private</span>; </pre></li>
+<li><pre><a name="50"></a>   <span class="comment">-- The parameters read from the command line will be written in</span> </pre></li>
+<li><pre><a name="51"></a>   <span class="comment">-- a variable of this type</span> </pre></li>
+<li><pre><a name="52"></a> </pre></li>
+<li><pre><a name="53"></a>   <span class="comment">-- Set this to False if you want case insensitive option matching.</span> </pre></li>
+<li><pre><a name="54"></a>   <span class="comment">-- For example, if you set this to False, "input", "Input", "INPUT"</span> </pre></li>
+<li><pre><a name="55"></a>   <span class="comment">-- and "InPuT" will be equivalent names for the option "input"</span> </pre></li>
+<li><pre><a name="56"></a>   <a href="generic_line_parser.ads.html#generic_line_parser.ads:56:4" title="defined at generic_line_parser.ads:56:4">Case_Sensitive</a> : Boolean := True; </pre></li>
+<li><pre><a name="57"></a><span class="keyword">package</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:57:9" title="defined at generic_line_parser.ads:57:9">Generic_Line_Parser</a> <span class="keyword">is</span> </pre></li>
+<li><pre><a name="58"></a>   <span class="keyword">use</span> Ada.Strings.Unbounded; </pre></li>
+<li><pre><a name="59"></a> </pre></li>
+<li><pre><a name="60"></a>   <span class="keyword">type</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:60:9" title="defined at generic_line_parser.ads:60:9">Parameter_Callback</a> <span class="keyword">is</span> </pre></li>
+<li><pre><a name="61"></a>     <span class="keyword">access</span> <span class="keyword">procedure</span> (<span class="name">Name</span>   : <span class="keyword">in</span>     Unbounded_String; </pre></li>
+<li><pre><a name="62"></a>                       <span class="name">Value</span>  : <span class="keyword">in</span>     Unbounded_String; </pre></li>
+<li><pre><a name="63"></a>                       <span class="name">Result</span> : <span class="keyword">in</span> <span class="keyword">out</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:49:9" title="defined at generic_line_parser.ads:49:9">Config_Data</a>); </pre></li>
+<li><pre><a name="64"></a> </pre></li>
+<li><pre><a name="65"></a>   <span class="keyword">type</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:65:9" title="defined at generic_line_parser.ads:65:9">Parameter_Descriptor</a> <span class="keyword">is</span> </pre></li>
+<li><pre><a name="66"></a>      <span class="keyword">record</span> </pre></li>
+<li><pre><a name="67"></a>         <span class="name">Name</span>      : Unbounded_String;    <span class="comment">-- Parameter name</span> </pre></li>
+<li><pre><a name="68"></a>         <span class="name">Default</span>   : Unbounded_String;    <span class="comment">-- Default value used if not on C.L.</span> </pre></li>
+<li><pre><a name="69"></a>         <span class="name">Mandatory</span> : Boolean;             <span class="comment">-- Parameter MUST be given</span> </pre></li>
+<li><pre><a name="70"></a>         <span class="name">Only_Once</span> : Boolean;             <span class="comment">-- Parameter MUST NOT be given more than once</span> </pre></li>
+<li><pre><a name="71"></a>         <span class="name">Callback</span>  : <a href="generic_line_parser.ads.html#generic_line_parser.ads:60:9" title="defined at generic_line_parser.ads:60:9">Parameter_Callback</a>;  <span class="comment">-- Called when parameter found</span> </pre></li>
+<li><pre><a name="72"></a>      <span class="keyword">end</span> <span class="keyword">record</span>; </pre></li>
+<li><pre><a name="73"></a>   <span class="comment">-- &lt;description&gt;Record holding the description of a parameter.  The fields</span> </pre></li>
+<li><pre><a name="74"></a>   <span class="comment">--  should be self-explenatory (I hope).  The only field that needs some</span> </pre></li>
+<li><pre><a name="75"></a>   <span class="comment">-- explanation is Name since it allows to specify more than one</span> </pre></li>
+<li><pre><a name="76"></a>   <span class="comment">-- name for each parameter.  The syntax is very simple: just separate</span> </pre></li>
+<li><pre><a name="77"></a>   <span class="comment">-- the names with commas.  For example, if Name is "f,filename,input"</span> </pre></li>
+<li><pre><a name="78"></a>   <span class="comment">-- one can use on the command line, with the same effect  f=/tmp/a.txt or</span> </pre></li>
+<li><pre><a name="79"></a>   <span class="comment">-- filename=/tmp/a.txt or input=/tmp/a.txt.  Spaces at both ends of</span> </pre></li>
+<li><pre><a name="80"></a>   <span class="comment">-- the label name are trimmed, so that, for example, "f,filename,input"</span> </pre></li>
+<li><pre><a name="81"></a>   <span class="comment">-- is equivalent to "f ,    filename  ,input "</span> </pre></li>
+<li><pre><a name="82"></a>   <span class="comment">-- &lt;/description&gt;</span> </pre></li>
+<li><pre><a name="83"></a> </pre></li>
+<li><pre><a name="84"></a> </pre></li>
+<li><pre><a name="85"></a>   <span class="keyword">type</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:85:9" title="defined at generic_line_parser.ads:85:9">Parameter_Descriptor_Array</a> <span class="keyword">is</span> </pre></li>
+<li><pre><a name="86"></a>     <span class="keyword">array</span> (Natural <span class="keyword">range</span> &lt;&gt;) <span class="keyword">of</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:65:9" title="defined at generic_line_parser.ads:65:9">Parameter_Descriptor</a>; </pre></li>
+<li><pre><a name="87"></a> </pre></li>
+<li><pre><a name="88"></a>   <span class="comment">-- Main exported method.  It parses the command line and it writes</span> </pre></li>
+<li><pre><a name="89"></a>   <span class="comment">-- the result in Result.  If some error is encountered, Bad_Command</span> </pre></li>
+<li><pre><a name="90"></a>   <span class="comment">-- is raised with an explicative exception message.  Help_Line,</span> </pre></li>
+<li><pre><a name="91"></a>   <span class="comment">-- if not empty, is written to Help_Output in case of error.</span> </pre></li>
+<li><pre><a name="92"></a>   <span class="keyword">procedure</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:92:14" title="defined at generic_line_parser.ads:92:14">Parse_Command_Line</a> </pre></li>
+<li><pre><a name="93"></a>     (<a href="generic_line_parser.ads.html#generic_line_parser.ads:93:7" title="defined at generic_line_parser.ads:93:7">Parameters</a>  : <span class="keyword">in</span>     <a href="generic_line_parser.ads.html#generic_line_parser.ads:85:9" title="defined at generic_line_parser.ads:85:9">Parameter_Descriptor_Array</a>; </pre></li>
+<li><pre><a name="94"></a>      <a href="generic_line_parser.ads.html#generic_line_parser.ads:94:7" title="defined at generic_line_parser.ads:94:7">Result</a>      :    <span class="keyword">out</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:49:9" title="defined at generic_line_parser.ads:49:9">Config_Data</a>; </pre></li>
+<li><pre><a name="95"></a>      <a href="generic_line_parser.ads.html#generic_line_parser.ads:95:7" title="defined at generic_line_parser.ads:95:7">Help_Line</a>   : <span class="keyword">in</span>     String := <span class="string">""</span>; </pre></li>
+<li><pre><a name="96"></a>      <a href="generic_line_parser.ads.html#generic_line_parser.ads:96:7" title="defined at generic_line_parser.ads:96:7">Help_Output</a> : <span class="keyword">in</span>     Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Error); </pre></li>
+<li><pre><a name="97"></a> </pre></li>
+<li><pre><a name="98"></a>   <a href="generic_line_parser.ads.html#generic_line_parser.ads:98:4" title="defined at generic_line_parser.ads:98:4">Bad_Command</a> : <span class="keyword">exception</span>; </pre></li>
+<li><pre><a name="99"></a> </pre></li>
+<li><pre><a name="100"></a> </pre></li>
+<li><pre><a name="101"></a>   <span class="comment">-- Convenient conversion function to Float that raise Bad_Command if</span> </pre></li>
+<li><pre><a name="102"></a>   <span class="comment">-- the argument has not a valid syntax</span> </pre></li>
+<li><pre><a name="103"></a>   <span class="keyword">function</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:103:13" title="defined at generic_line_parser.ads:103:13">To_Float</a> (<a href="generic_line_parser.ads.html#generic_line_parser.ads:103:23" title="defined at generic_line_parser.ads:103:23">X</a> : Unbounded_String) </pre></li>
+<li><pre><a name="104"></a>                      <span class="keyword">return</span> Float; </pre></li>
+<li><pre><a name="105"></a> </pre></li>
+<li><pre><a name="106"></a>   <span class="comment">-- Convenient conversion function to Float that raise Bad_Command if</span> </pre></li>
+<li><pre><a name="107"></a>   <span class="comment">-- the argument has not a valid syntax</span> </pre></li>
+<li><pre><a name="108"></a>   <span class="keyword">function</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:108:13" title="defined at generic_line_parser.ads:108:13">To_Natural</a> (<a href="generic_line_parser.ads.html#generic_line_parser.ads:108:25" title="defined at generic_line_parser.ads:108:25">X</a> : Unbounded_String) </pre></li>
+<li><pre><a name="109"></a>                        <span class="keyword">return</span> Natural; </pre></li>
+<li><pre><a name="110"></a> </pre></li>
+<li><pre><a name="111"></a><span class="keyword">end</span> <a href="generic_line_parser.ads.html#generic_line_parser.ads:57:9" title="defined at generic_line_parser.ads:57:9">Generic_Line_Parser</a>; </pre></li>
+</ol></div>
+</div>
+
+</body>
+</html>

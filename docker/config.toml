@@ -1,0 +1,13 @@
+[toolchain]
+assistant = false
+[toolchain.external]
+gnat = "FALSE"
+gprbuild = "FALSE"
+[toolchain.use]
+gnat = "gnat_native=12.2.1"
+gprbuild = "gprbuild=22.0.0"
+[user]
+email = "thomas.bellembois@uca.fr"
+github_login = "tbellembois"
+name = "Thomas Bellembois"
+

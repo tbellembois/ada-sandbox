@@ -1,0 +1,14 @@
+project Gclp_examples is
+
+   for Object_Dir use "bin";
+
+   for Source_Dirs use ("..", ".", "Basic_Example");
+
+   for Main use ("basic_example-main.adb"); 
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnat05", "-gnata", "-g");
+   end Compiler;
+
+end Gclp_examples;
+

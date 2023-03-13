@@ -1,0 +1,11 @@
+name = "codefirst_dockerproxy"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Thomas Bellembois"]
+maintainers = ["Thomas Bellembois <thomas.bellembois@uca.fr>"]
+maintainers-logins = ["tbellembois"]
+
+executables = ["codefirst_dockerproxy"]
+[[depends-on]]
+aws = "^23.0.0"

@@ -1,0 +1,38 @@
+FROM debian:bookworm as builder
+
+RUN apt -y update && apt -y install unzip git curl gnat
+
+RUN mkdir -p /usr/local/src/alr
+ADD https://github.com/alire-project/alire/releases/download/v1.2.2/alr-1.2.2-bin-x86_64-linux.zip /usr/local/src/alr/alr.zip
+RUN cd /usr/local/src/alr && unzip alr.zip && rm -f alr.zip
+
+ENV PATH="$PATH:/usr/local/src/alr/bin"
+
+WORKDIR /root
+RUN mkdir -p /root/.config/alire
+
+RUN alr -d get --build gnat_native
+RUN alr -d get --build gprbuild
+
+RUN alr toolchain
+
+COPY docker/config.toml /root/.config/alire/
+
+RUN mkdir -p /usr/local/src/codefirst-dockerproxy
+WORKDIR /usr/local/src/codefirst-dockerproxy
+COPY . .
+
+RUN ls -la
+
+RUN alr -d build
+
+# FROM debian:bookwork
+
+# COPY --from=builder /usr/local/codefirst-dockerproxy/greet /bin/greet
+
+# COPY docker/entrypoint.sh /
+# RUN chmod +x /entrypoint.sh
+
+# USER root
+# EXPOSE 8080
+# ENTRYPOINT [ "/entrypoint.sh" ]
